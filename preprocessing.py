@@ -8,7 +8,7 @@ import nltk
 import spacy
 import string
 from nltk.corpus import stopwords
-import pandas
+import pandas as pd
 
 #################### Init ####################
 
@@ -61,7 +61,7 @@ def punct_lower(input_tokens):
 
 def remove_stopwords(input_tokens):
     """list(spacy_string) -> list(spacy_string)
-    Returning the list of tokens without the stopwords
+    Return the list of tokens without the stopwords
     """
     
     # init var
@@ -75,9 +75,76 @@ def remove_stopwords(input_tokens):
 
 
 
-def create_dataframe(input_data):
+def extract_people(input_text):
+    """list(spacy_string) -> list(spacy_string)
+    Return the list of people extracted from the input_text
     """
     
+    # init var
+    output_people = []
+    
+    # core
+    for ent in input_text.ents:         # parsing the input_text
+        if ent.label_ == 'PERSON':      # checking if the token is a person
+            output_people.append(ent)   # adding it to the output lists
+    return output_people
+
+
+
+def add_article(df, person, page_text, page_preprocessed, desc, desc_preprocessed):
+    """DataFrame(spacy_string * 5) * spacy_string * 5 -> pd.DataFrame(spacy_string * 5)
+    Hypothesis : It only work for one article
+    Return the dataframe with 5 columns containing the input information
     """
     
+    # core
+    df2 = pd.DataFrame([[person,
+                         page_text,
+                         page_preprocessed,
+                         desc,
+                         desc_preprocessed]], columns = df.index.name)
+    df.append(df2)
+    return df
+
+
+
+#def POS_tagging():
+#    pass
+
+
+
+#def named_entity_recognition():
+#    pass
+
+
+
+def create_database(extracted_data):
+    """list(spacy_string) -> DataFrame(spacy_string * 5)
+    Create a dataframe then row add_article to add content from extracted data
+    """
+    
+    # var init
+    
+    df = pd.DataFrame(columns = ["person",
+                                 "Wikipedia page text",
+                                 "Wikipedia page text after preprocessing",
+                                 "Wikidata description"
+                                 "Wikidata description after preprocessing"])
+    
+    # core
+        # Preprocessing the extracted data
+        
+    for content in ...:         # parsing all the data extracted, preprocessed
+        
+        person = ...
+        page_text = ...
+        page_preprocessed = ...
+        desc = ...
+        desc_preprocessed = ...
+        
+        df = add_article(df, person, page_text, page_preprocessed, desc, desc_preprocessed)
+    
+    return df    
+    
+
 #################### Test ####################
