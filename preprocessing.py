@@ -108,8 +108,11 @@ def add_article(df, person, page_text, page_preprocessed, desc, desc_preprocesse
 
 
 
-#def POS_tagging():
-#    pass
+def POS_tagging(input_list):
+    """list(spacy_string) -> list(spacy_string * POS_tag_type)
+    Return the same list tagged with POS tag
+    """
+    return nltk.pos_tag(input_list)
 
 
 
