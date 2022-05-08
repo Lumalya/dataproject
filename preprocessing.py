@@ -18,18 +18,18 @@ en_stopwords = stopwords.words('english')   # generating the list of stopwords
 #################### Functions ####################
 
 def text_to_sent(input_text):
-    """spacy_string -> list(spacy_string)
+    '''spacy_string -> list(spacy_string)
     Return the list of sentences from an input_text
-    """
+    '''
     # core
     return input_text.sents
 
 
 
 def text_to_token(input_text):
-    """list(spacy_string) -> list(spacy_string)
+    '''list(spacy_string) -> list(spacy_string)
     Return the list of tokens from an input_text
-    """
+    '''
     # init var
     output_tokens = []
     
@@ -41,9 +41,9 @@ def text_to_token(input_text):
 
 
 def punct_lower(input_tokens):
-    """list(spacy_string) -> list(spacy_string)
+    '''list(spacy_string) -> list(spacy_string)
     Return the same word by lowering and removing punctuation
-    """
+    '''
 
     # init var    
     output_tokens = []
@@ -60,9 +60,9 @@ def punct_lower(input_tokens):
 
 
 def remove_stopwords(input_tokens):
-    """list(spacy_string) -> list(spacy_string)
+    '''list(spacy_string) -> list(spacy_string)
     Return the list of tokens without the stopwords
-    """
+    '''
     
     # init var
     output_tokens = []
@@ -76,9 +76,9 @@ def remove_stopwords(input_tokens):
 
 
 def extract_people(input_text):
-    """list(spacy_string) -> list(spacy_string)
+    '''list(spacy_string) -> list(spacy_string)
     Return the list of people extracted from the input_text
-    """
+    '''
     
     # init var
     output_people = []
@@ -92,10 +92,10 @@ def extract_people(input_text):
 
 
 def add_article(df, person, page_text, page_preprocessed, desc, desc_preprocessed):
-    """DataFrame(spacy_string * 5) * spacy_string * 5 -> pd.DataFrame(spacy_string * 5)
+    '''DataFrame(spacy_string * 5) * spacy_string * 5 -> pd.DataFrame(spacy_string * 5)
     Hypothesis : It only work for one article
     Return the dataframe with 5 columns containing the input information
-    """
+    '''
     
     # core
     df2 = pd.DataFrame([[person,
@@ -109,22 +109,22 @@ def add_article(df, person, page_text, page_preprocessed, desc, desc_preprocesse
 
 
 def POS_tagging(input_list):
-    """list(spacy_string) -> list(spacy_string * POS_tag_type)
+    '''list(spacy_string) -> list(spacy_string * POS_tag_type)
     Return the same list tagged with POS tag
-    """
+    '''
     return nltk.pos_tag(input_list)
 
 
-
-#def named_entity_recognition():
-#    pass
-
+"""
+def named_entity_recognition():
+    pass
+"""
 
 
 def create_database(extracted_data):
-    """list(spacy_string) -> DataFrame(spacy_string * 5)
+    '''list(spacy_string) -> DataFrame(spacy_string * 5)
     Create a dataframe then row add_article to add content from extracted data
-    """
+    '''
     
     # var init
     
