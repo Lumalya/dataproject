@@ -128,11 +128,13 @@ def create_database(extracted_data):
     
     # var init
     
-    df = pd.DataFrame(columns = ["person",
+    df = pd.DataFrame(extracted_data,
+                      columns = ["person",
                                  "Wikipedia page text",
                                  "Wikipedia page text after preprocessing",
                                  "Wikidata description"
-                                 "Wikidata description after preprocessing"])
+                                 "Wikidata description after preprocessing"]
+                      )
     
     # core
         # Preprocessing the extracted data
