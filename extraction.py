@@ -7,9 +7,11 @@ Corpus extraction from different categories.
 #################### Libraries ####################
 import os
 import argparse
-import requests
+# import requests
 import json
+import nltk
 from SPARQLWrapper import SPARQLWrapper , JSON
+import wikipedia, wptools
 #################### Functions ####################
 
 #################### Test ####################
@@ -25,11 +27,11 @@ n_sent = int(input('please enter the number of sentences (n)?'))
 try :
 	os.mkdir('./data_info')
 except:
-	pass
+	print('directore data_info exist.')
 try :
 	os.mkdir('./data')
 except:
-	pass
+	print('directore data exist.')
 ################################################################################## from last year
 # agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
 # gragh_endpoint ='https://query.wikidata.org/sparql'
@@ -55,33 +57,62 @@ SELECT ?page , ?pageID WHERE {
 # print('hi')
 	try: 
 		result = sparql.query().convert()
-	except:
-		print('there was an eror for category :', category)
+		try:
+			os.mkdir('./data/'+ category)
+		except:
+			print(category , ' directory already exist.')
 
-	try:
-		os.mkdir('./data/'+ category)
-	except:
-		print(category , ' directory already exist.')
+		try:
+			os.mkdir('./data_info/'+ category)
+		except:
+			print(category , ' directory already exist.')
 
-	try:
-		os.mkdir('./data_info/'+ category)
-	except:
-		print(category , ' directory already exist.')
-	
-	f=  open('./data_info/'+ category+'/' + category + '_url.txt' , 'w')
-	f2=  open('./data_info/'+ category+'/' + category + '_pageid.txt' , 'w')
+		f=  open('./data_info/'+ category+'/' + category + '_url.txt' , 'w')
+	# f2=  open('./data_info/'+ category+'/' + category + '_pageid.txt' , 'w')
 	
 
-	for res in result['results']['bindings']:
-		print(res['page']['value'], '------------' , res['pageID']['value'])
-		print (res['page']['value'] , file=f)
-		print(res['pageID']['value'], file=f2)
-	f.close()
-	f2.close()
+		for res in result['results']['bindings']:
+			print(res['page']['value'], '------------' , res['pageID']['value'])
+			print (res['page']['value'] , ', ' , res['pageID']['value'] , file=f)
+			pageid = res['pageID']['value']
+			try : 
+				page = wikipedia.page(pageid = pageid)
+				title = page.title
+				title_parts = title.split(' ')
+				new_title = '_'.join(title_parts)
+				article  = open('./data/'+ category+'/' + new_title + '.txt' , 'w') 
+				print(new_title)
+				content =  page.content
+				# try:
+				# 	sents = nltk.sent_tokenize(content)
+				# 	print(sents[:])
+				# except:
+				# 	print('sentence tokenizer does not work.')
+				print( page.content , file=article)
+				article.close()
+			except:
+				print('error:  wikipedia tool , page  :' , new_title)
+			# page2 = wptools.page(pageid = pageid)
+			
+			# print(res['pageID']['value'], file=f2)
+		f.close()
+		
+
+
+
+
+
+	except:
+		print('\n\n\nthere was an eror for category :', category)
+
 	
 	
 	
-print(result)
+	# f2.close()
+	
+	
+	
+# print(result)
 # for res in result["results"]["bindings"]:
 # 	print(res["label"]["value"])
 #####################################################################
