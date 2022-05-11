@@ -20,7 +20,7 @@ def train_clustering(data, n_clusters):
     '''
     
     # core
-    km = KMeans(n_clusters=n_clusters)
+    km = KMeans(n_clusters = n_clusters)
                     # Apply the clustering model on the tf-idf matrix (the features)
     km.fit(data)    # applying model on data
     return km
