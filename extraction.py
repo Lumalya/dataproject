@@ -5,11 +5,13 @@ Corpus extraction from different categories.
 """
 
 #################### Libraries ####################
+from bdb import Breakpoint
 import os
 import argparse
 # import requests
 import json
 import nltk
+# import spacy
 from SPARQLWrapper import SPARQLWrapper , JSON
 import wikipedia, wptools
 #################### Functions ####################
@@ -22,17 +24,13 @@ import wikipedia, wptools
 categories = ['Airports', 'Artists', 'Astronauts', 'Building', 'Astronomical_objects', 'City',
 'Comics_characters', 'Companies', 'Foods', 'Transport', 'Monuments_and_memorials', 'Politicians', 'Sports_teams',
 'Sportspeople', 'Universities_and_colleges', 'Written_communication']
-k_art = int(input('please enter the number of articles (k)?'))
-n_sent = int(input('please enter the number of sentences (n)?'))
-try :
-	os.mkdir('./data_info')
-except:
-	print('directore data_info exist.')
-try :
-	os.mkdir('./data')
-except:
-	print('directore data exist.')
-################################################################################## from last year
+k_art = int(input('please enter the number of articles per category (k)?'))
+n_sent = int(input('please enter the minimum number of sentences (n)?'))
+try : os.mkdir('./data_info')
+except Exception as e : print(e)
+try : os.mkdir('./data')
+except Exception as e : print(e)
+################################################################################## 
 # agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
 # gragh_endpoint ='https://query.wikidata.org/sparql'
 
@@ -40,6 +38,8 @@ except:
 agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
 dataStore = "http://dbpedia.org/sparql/"  # 'https://query.wikidata.org/sparql' 
 sparql = SPARQLWrapper(dataStore)
+# nlp = spacy.load('en_core_web_sm')
+
 for category in categories :
 	query =  """
 PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -47,7 +47,7 @@ PREFIX dbc: <http://dbpedia.org/resource/Category:>
 PREFIX dbo: <http://dbpedia.org/ontology/>
 
 SELECT ?page , ?pageID WHERE {
-	?page dcterms:subject/skos:broader*  	dbc:""" + category + """;
+	?page dcterms:subject/skos:broader*  	dbc:""" + category + """ ;
 	  dbo:wikiPageID ?pageID .
 	
 	 } LIMIT """+ str(k_art)
@@ -57,18 +57,14 @@ SELECT ?page , ?pageID WHERE {
 # print('hi')
 	try: 
 		result = sparql.query().convert()
-		try:
-			os.mkdir('./data/'+ category)
-		except:
-			print(category , ' directory already exist.')
+		try: os.mkdir('./data/'+ category)
+		except Exception as e : print(e)
 
-		try:
-			os.mkdir('./data_info/'+ category)
-		except:
-			print(category , ' directory already exist.')
+		try: os.mkdir('./data_info/'+ category)
+		except Exception as e : print(e)
 
-		f=  open('./data_info/'+ category+'/' + category + '_url.txt' , 'w')
-	# f2=  open('./data_info/'+ category+'/' + category + '_pageid.txt' , 'w')
+		f=  open('./data_info/'+ category+'/' + category + '_url.txt' , 'a')
+	    # f2=  open('./data_info/'+ category+'/' + category + '_pageid.txt' , 'w')
 	
 
 		for res in result['results']['bindings']:
@@ -79,19 +75,49 @@ SELECT ?page , ?pageID WHERE {
 				page = wikipedia.page(pageid = pageid)
 				title = page.title
 				title_parts = title.split(' ')
-				new_title = '_'.join(title_parts)
-				article  = open('./data/'+ category+'/' + new_title + '.txt' , 'w') 
-				print(new_title)
+				new_title = '_'.join(title_parts) 
+				
 				content =  page.content
-				# try:
-				# 	sents = nltk.sent_tokenize(content)
-				# 	print(sents[:])
-				# except:
-				# 	print('sentence tokenizer does not work.')
-				print( page.content , file=article)
+				'''
+				text = nlp(content) 
+				i = 0
+				for sen in text.sents : 
+					i += 1
+				if i <  n_sent : continue
+				'''
+				if len(content) < n_sent * 100 : 
+					print('Short article! ' , len(content)/100 )
+					continue
+				article  = open('./data/'+ category+'/' + new_title + '.txt' , 'w')
+				print( page.content , file= article)
 				article.close()
-			except:
-				print('error:  wikipedia tool , page  :' , new_title)
+				try:
+					pageInfo = wptools.page(pageid = pageid, silent = True)
+					pageInfo.get()
+					infobox = pageInfo.data['infobox']
+					print('wptools done!\n' , infobox)
+					with open('./data/' + category+ '/' + new_title + '_infobox.json' , 'w') as fjson :
+						json.dump(infobox, fjson)
+					with open('./data/' + category+ '/' + new_title + '_statements.json' , 'w') as fjson2 :
+						json.dump( pageInfo.data['wikidata'] , fjson2)
+					# with open('./data/' + category+ '/' + new_title + '_description.json' , 'w') as fjson3 :
+					# 	json.dump( pageInfo.data['description'] , fjson3)
+					# 	print(pageInfo.data['description'])
+
+				except Exception as e :
+					print('\n' , 'error: wptools, page : ' , pageid)
+					print(e)
+					
+			except Exception as e :	
+				print( '\n' , 'error:  wikipedia tool, page  :' , pageid)
+				print(e)
+				
+
+			
+
+			
+
+			
 			# page2 = wptools.page(pageid = pageid)
 			
 			# print(res['pageID']['value'], file=f2)
@@ -102,8 +128,10 @@ SELECT ?page , ?pageID WHERE {
 
 
 
-	except:
+	except Exception as e:
 		print('\n\n\nthere was an eror for category :', category)
+		print(e)
+
 
 	
 	
