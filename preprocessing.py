@@ -3,12 +3,13 @@
 
 #################### Libraries ####################
 
-import extraction  # import the module extraction.py
+# import extraction  # import the module extraction.py
 import nltk
 import spacy
 import string
 from nltk.corpus import stopwords
 import pandas as pd
+import os
 
 #################### Init ####################
 
@@ -153,3 +154,39 @@ def create_database(extracted_data):
     
 
 #################### Test ####################
+nlp = spacy.load("en_core_web_sm")
+cats = os.listdir(('./data'))
+print(cats)
+try: os.mkdir('./data_preprocessed')
+except Exception as e: print(e)
+
+for cat in cats[:1]:
+
+    path1 = './data/' + cat
+    filenames =os.listdir(path1)
+    # print(filenames)
+    path2 =  './data_preprocessed/' + cat
+
+    # if len(filenames) > 0 :
+    try:
+        os.mkdir(path2)
+    except Exception as e:
+        print(e)
+    for fn in filenames [:3]:
+        if fn[-9:] == '_desc.txt' or fn[-4:] == '.txt' :
+            with open(path1+'/'+fn , 'r') as f :
+                # print(f.read())
+                text = f.read()
+            text_sp = nlp(text)
+            tokens = text_to_token(text_sp)
+
+            tokens_pnc = punct_lower(tokens)
+            tokens_stp = remove_stopwords(tokens_pnc)
+            # tokens_peo = extract_people(tokens_stp)
+            # print(tokens_peo)
+
+            with open(path2 + '/' + fn , 'w' ) as f2 :
+                print(*tokens_stp, file = f2)
+
+
+
