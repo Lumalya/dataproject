@@ -10,7 +10,6 @@ from sklearn import metrics # a function to compute evaluation scores for cluste
 import nltk
 import pandas as pd
 
-# import preprocessing # import the module preprocessing.py
 
 #################### Functions ####################
 
@@ -25,7 +24,26 @@ def train_clustering(data, n_clusters):
     km.fit(data)    # applying model on data
     return km
 
-
+def visualise(results: dict):
+        """
+        Function for the results visualization. Stores the plot with the results into the folder named 'data'
+        :param results: dictionary of dictionaries with 5 scores for each setting
+        """
+        res_df = pd.DataFrame(results)
+        res_df.to_csv('data/Clustering results.csv', index=False)
+        for metric in list(results.values())[0]:
+            x = []
+            y = []
+            for result in results:
+                x.append(result)
+                y.append(results[result][metric])
+            plt.plot(x, y, label=metric)
+        plt.gcf().set_size_inches(10, 5)
+        plt.xlabel('number of clusters and method')
+        plt.ylabel('quality')
+        plt.title('Metrics')
+        plt.legend()
+        plt.savefig('data/Clustering visualization.png')
 
 def compute_scores(km, categories, tfidf):
     '''
@@ -63,16 +81,18 @@ def visualize_metrics(df, tfidf):
     
     # init var
     all_scores = [] # empty list to calc all scores one by one
-    for n_clusters in range(2, 17): # train with 2 to 16 clusters
+    for n_clusters in range(2, 16): # train with 2 to 16 clusters
         km = train_clustering(tfidf, n_clusters)
-        scores = compute_scores(km, df['category'], tfidf)
+        scores = compute_scores(km, df['categories'], tfidf)
         all_scores.append(scores)
 
     df = pd.DataFrame(all_scores) # df containing all scores
-    df.index = range(2, 17) # 2 to 16 clusters
-    plot = df.plot.line(title = 'Scores de clustering')
-    plot.set_xlabel('Nombre de clusters')
+    df.index = range(2, 16) # 2 to 16 clusters
+    plot = df.plot.line(title = 'Scores of clustering')
+    plot.set_xlabel('Numbers of clusters')
     plot.set_ylabel('Scores')
+    return all_scores
+
 
 
 
@@ -86,7 +106,7 @@ def rebuild_sentence(words):
 df = pd.read_csv('DataSet.csv')
 df = shuffle(df)
 
-# df['output_text'] = df['output_text'].apply(rebuild_sentence)
+#df['preprocessed_texts'] = df['preprocessed_texts'].apply(rebuild_sentence)
 corpus = df['preprocessed_texts'].astype(str)
 
 vectorizer = TfidfVectorizer(max_features = 500, #number of token which we want to know frequency
@@ -115,4 +135,18 @@ categories = [
 	'Universities_and_colleges',
 	'Written_communication'
 ]
-compute_scores(kmeans, categories, tfidf)
+
+kmeans.fit(tfidf)
+df['Cluster'] = kmeans.labels_
+results = compute_scores(kmeans, df['categories'], tfidf)
+
+visualize_metrics(df, tfidf)
+
+
+'''
+cat2clus = dict()
+# temp = df[['categories','Cluster']]
+# for index, row in temp.iterrows():
+#     cat2clus[row['categories']] = row['Cluster']
+
+print(cat2clus)'''

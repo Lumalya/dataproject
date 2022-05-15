@@ -10,7 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import Perceptron # notre modèle à appliquer
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-import preprocessing # import the module preprocessing.py
+
 
 #################### Global ####################
 
@@ -18,7 +18,7 @@ random_state = 59
 
 #################### Functions ####################
 
-def convert_cat_to_idx(category):s
+def convert_cat_to_idx(category):
 
     # core
     return cat_to_idx[category]
@@ -35,7 +35,7 @@ def rebuild_sentence(words):
 def show_scores(Y_test, Y_pred, idx_to_cat):
     
     # core
-    for i in range(16):
+    for i in range(15):
         print(i, idx_to_cat[i])
     
     print('Accuracy:', accuracy_score(Y_test, Y_pred))
@@ -53,7 +53,7 @@ def show_accuracy(Y_test, Y_pred):
     categories = []
     
     # core
-    for i in range(16):
+    for i in range(15):
         categories.append(idx_to_cat[i])
     
     accuracies = confusion_matrix(Y_test, Y_pred, normalize = "true").diagonal()
@@ -70,10 +70,10 @@ def show_accuracy(Y_test, Y_pred):
 
 #################### Test ####################
 
-df = pd.read_json('test.json') # put back in file
+df = pd.read_csv('DataSet.csv') # put back in file
 df = shuffle(df, random_state=random_state)
 
-all_categories = df['category'].unique()
+all_categories = df['categories'].unique()
 cat_to_idx = {}
 idx_to_cat = {}
 
@@ -81,7 +81,7 @@ for i, cat in enumerate(all_categories):
     cat_to_idx[cat] = i
     idx_to_cat[i] = cat
 
-df['category_index'] = df['category'].apply(convert_cat_to_idx)
+df['category_index'] = df['categories'].apply(convert_cat_to_idx)
 
 Y = df['category_index']
 
@@ -91,7 +91,7 @@ vectorizer = TfidfVectorizer(max_features = 400,
                              stop_words = 'english'
                              )
 
-X = vectorizer.fit_transform(df['output_text'].apply(rebuild_sentence))
+X = vectorizer.fit_transform(df['preprocessed_texts']) # .astype(str) and maybe .apply(rebuild_sentence)
 print(X)
 
 # separate into train and test set
@@ -105,8 +105,9 @@ X_train, X_test, Y_train, Y_test = train_test_split(X,
 perceptron = Perceptron()
 perceptron.fit(X_train, Y_train) # train by fitting the data into the model
 Y_pred = perceptron.predict(X_test)
+print('kkkk')
 
-print('Predictions:') # predicted values
+print('Predictions:') # predicted values 
 for pred in Y_pred:
     print(str(pred).ljust(3), end = '')
 print()
@@ -117,7 +118,7 @@ for pred in Y_test:
 print()
 
 show_scores(Y_test, Y_pred, idx_to_cat)
-show_accuracy(Y_test, Y_pred)
+# show_accuracy(Y_test, Y_pred)
 
 # Show most important words for each category
 # It influence the model to choose this category
@@ -136,3 +137,4 @@ for class_num, class_weights in enumerate(perceptron.coef_):
         print(idx_to_tag[id], val)
     print()
     print()
+ 
