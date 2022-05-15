@@ -3,11 +3,12 @@
 
 """
 Data Science project: May 2022
-Dimitra NIAOURI
-Ghasem ROSHANFEKR
-Chea-Jimmy Seang
 
+SEANG Chea-Jimmy
+NIAOURI Dimitra
+ROSHANFEKR Ghasem
 """
+
 #################### Libraries ####################
 
 import nltk

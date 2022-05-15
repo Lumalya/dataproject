@@ -3,11 +3,12 @@
 
 """
 Data Science project: May 2022
-Dimitra NIAOURI
-Ghasem ROSHANFEKR
-Chea-Jimmy Seang
 
+SEANG Chea-Jimmy
+NIAOURI Dimitra
+ROSHANFEKR Ghasem
 """
+
 #################### Libraries ####################
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -125,4 +126,3 @@ df['Cluster'] = kmeans.labels_
 results = compute_scores(kmeans, df['categories'], tfidf)
 
 visualize_metrics(df, tfidf)
-
