@@ -25,11 +25,7 @@ This code can be launched in a terminal (UNIX-based system). Linux's shell/bash 
 It will install it if the computer doesn't have it.
 
 1.2 - Make sure you have pip libraries installed on your computer, write the following commands :
-            pip install --upgrade pandas
-            pip install --upgrade scikit-learn
-            pip install --upgrade nltk
-            pip install --upgrade wptools
-            pip install --upgrade SPARQLWrapper
+            pip3 install -r requirements.txt
             please use the spacy installer model on their website, to install the spacy library
             
 It will install it if the computer doesn't have it, update it if outdated, or does nothing if the pip library is already installed and up-to-date.
