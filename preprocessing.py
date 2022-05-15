@@ -163,6 +163,7 @@ longtext = []
 longdesc = []
 longpretext = []
 longpredesc = []
+longcats = []
 for cat in cats:
 
     path1 = './data/' + cat
@@ -193,10 +194,16 @@ for cat in cats:
             pre_text = ' '.join(tokens_stp)
             # print('\n \n \n startssss')
             # print(pre_text)
-            longtext.append(text)
-            longpretext.append(pre_text)
-data = {'texts' : longtext , 'preprocessed_texts' : longpretext}
-df = pd.DataFrame(data, columns = ['texts', 'preprocessed_texts'] )
+            if  fn[-9:] == '_desc.txt' :
+                longdesc.append(text)
+                longpredesc.append(pre_text)
+            else :
+                longtext.append(text)
+                longpretext.append(pre_text)
+                longcats.append(cat)
+
+data = {'categories' : longcats,'texts' : longtext , 'preprocessed_texts' : longpretext, 'descriptions':longdesc , 'descriptions_pre': longpredesc }
+df = pd.DataFrame(data, columns = ['categories', 'texts', 'preprocessed_texts', 'descriptions' , 'descriptions_pre' ] )
 df.to_csv("DataSet.csv")
 
 
