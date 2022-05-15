@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+SEANG Chea-Jimmy
+NIAOURI Dimitra
+ROSHANFEKR Ghasem
+"""
+
 #################### Libraries ####################
 
 import pandas as pd
