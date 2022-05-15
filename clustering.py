@@ -10,7 +10,7 @@ from sklearn import metrics # a function to compute evaluation scores for cluste
 import nltk
 import pandas as pd
 
-import preprocessing # import the module preprocessing.py
+# import preprocessing # import the module preprocessing.py
 
 #################### Functions ####################
 
@@ -83,11 +83,11 @@ def rebuild_sentence(words):
 
 #################### Test ####################
 
-df = pd.read_json('test')
+df = pd.read_csv('DataSet.csv')
 df = shuffle(df)
 
-df['output_text'] = df['output_text'].apply(rebuild_sentence)
-corpus = df['output_text']
+# df['output_text'] = df['output_text'].apply(rebuild_sentence)
+corpus = df['preprocessed_texts'].astype(str)
 
 vectorizer = TfidfVectorizer(max_features = 500, #number of token which we want to know frequency
                              use_idf = True,
@@ -96,4 +96,23 @@ vectorizer = TfidfVectorizer(max_features = 500, #number of token which we want 
 
 tfidf = vectorizer.fit_transform(corpus) # freq of words in a corpus
 
-visualize_metrics(df, tfidf)
+kmeans = KMeans(n_clusters = 15)
+categories = [
+	'Airports',
+	'Artists',
+	'Astronauts',
+	'Building',
+	'Astronomical_objects',
+	'City',
+	'Comics_characters',
+	'Companies',
+	'Foods',
+	'Transport',
+	'Monuments_and_memorials',
+	'Politicians',
+	'Sports_teams',
+	'Sportspeople',
+	'Universities_and_colleges',
+	'Written_communication'
+]
+compute_scores(kmeans, categories, tfidf)

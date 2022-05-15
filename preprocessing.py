@@ -163,7 +163,7 @@ longtext = []
 longdesc = []
 longpretext = []
 longpredesc = []
-for cat in cats[:1]:
+for cat in cats:
 
     path1 = './data/' + cat
     filenames =os.listdir(path1)
@@ -175,7 +175,7 @@ for cat in cats[:1]:
         os.mkdir(path2)
     except Exception as e:
         print(e)
-    for fn in filenames [:3]:
+    for fn in filenames :
         if  fn[-4:] == '.txt' :  # fn[-9:] == '_desc.txt' or
             with open(path1+'/'+fn , 'r') as f :
                 # print(f.read())
