@@ -4,9 +4,7 @@ NIAOURI Dimitra
 ROSHANFEKR Ghasem
 
 Files
-main.py
-test1.py
-test2.py
+make.sh
 extraction.py
 preprocessing.py
 clustering.py
@@ -27,11 +25,7 @@ This code can be launched in a terminal (UNIX-based system). Linux's shell/bash 
 It will install it if the computer doesn't have it.
 
 1.2 - Make sure you have pip libraries installed on your computer, write the following commands :
-            pip install --upgrade pandas
-            pip install --upgrade scikit-learn
-            pip install --upgrade nltk
-            pip install --upgrade wptools
-            pip install --upgrade SPARQLWrapper
+            pip3 install -r requirements.txt
             please use the spacy installer model on their website, to install the spacy library
             
 It will install it if the computer doesn't have it, update it if outdated, or does nothing if the pip library is already installed and up-to-date.
@@ -55,7 +49,7 @@ Method 2 (if the make file doesn't work) :
 
 2bis.2 - Write the following commands :
                 chmod -R 744 *
-                python3 extraction.py
+                (python3 extraction.py)
                 python3 preprocessing.py
                 python3 clustering.py
                 python3 classifying.py
