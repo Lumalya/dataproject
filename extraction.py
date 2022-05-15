@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Data Science project: May 2022
+Dimitra NIAOURI
+Ghasem ROSHANFEKR
+Chea-Jimmy Seang
+
+"""
+"""
 Corpus extraction from different categories.
 """
 

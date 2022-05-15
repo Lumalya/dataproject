@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Data Science project: May 2022
+Dimitra NIAOURI
+Ghasem ROSHANFEKR
+Chea-Jimmy Seang
+
+"""
 #################### Libraries ####################
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -23,27 +30,6 @@ def train_clustering(data, n_clusters):
                     # Apply the clustering model on the tf-idf matrix (the features)
     km.fit(data)    # applying model on data
     return km
-
-def visualise(results: dict):
-        """
-        Function for the results visualization. Stores the plot with the results into the folder named 'data'
-        :param results: dictionary of dictionaries with 5 scores for each setting
-        """
-        res_df = pd.DataFrame(results)
-        res_df.to_csv('data/Clustering results.csv', index=False)
-        for metric in list(results.values())[0]:
-            x = []
-            y = []
-            for result in results:
-                x.append(result)
-                y.append(results[result][metric])
-            plt.plot(x, y, label=metric)
-        plt.gcf().set_size_inches(10, 5)
-        plt.xlabel('number of clusters and method')
-        plt.ylabel('quality')
-        plt.title('Metrics')
-        plt.legend()
-        plt.savefig('data/Clustering visualization.png')
 
 def compute_scores(km, categories, tfidf):
     '''
@@ -69,7 +55,6 @@ def compute_scores(km, categories, tfidf):
     scores['v_measure'] = v_measure
     scores['rand_index'] = rand_index
     scores['silhouette'] = silhouette
-
     return scores
 
 
@@ -101,12 +86,11 @@ def rebuild_sentence(words):
 
 
 
-#################### Test ####################
-
+##########################################################
+# read the data into the file
 df = pd.read_csv('DataSet.csv')
 df = shuffle(df)
-
-#df['preprocessed_texts'] = df['preprocessed_texts'].apply(rebuild_sentence)
+# Extracting our corpus
 corpus = df['preprocessed_texts'].astype(str)
 
 vectorizer = TfidfVectorizer(max_features = 500, #number of token which we want to know frequency
@@ -115,7 +99,7 @@ vectorizer = TfidfVectorizer(max_features = 500, #number of token which we want 
                              tokenizer = nltk.word_tokenize)
 
 tfidf = vectorizer.fit_transform(corpus) # freq of words in a corpus
-
+# define our clustering model
 kmeans = KMeans(n_clusters = 15)
 categories = [
 	'Airports',
@@ -135,18 +119,10 @@ categories = [
 	'Universities_and_colleges',
 	'Written_communication'
 ]
-
+# training the clustering model
 kmeans.fit(tfidf)
 df['Cluster'] = kmeans.labels_
 results = compute_scores(kmeans, df['categories'], tfidf)
 
 visualize_metrics(df, tfidf)
 
-
-'''
-cat2clus = dict()
-# temp = df[['categories','Cluster']]
-# for index, row in temp.iterrows():
-#     cat2clus[row['categories']] = row['Cluster']
-
-print(cat2clus)'''

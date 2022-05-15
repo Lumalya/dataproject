@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Data Science project: May 2022
+Dimitra NIAOURI
+Ghasem ROSHANFEKR
+Chea-Jimmy Seang
 
+"""
 #################### Libraries ####################
 
 import pandas as pd
@@ -69,13 +75,13 @@ def show_accuracy(Y_test, Y_pred):
 
 
 #################### Test ####################
-
-df = pd.read_csv('DataSet.csv') # put back in file
+# read the data from csv file into  dataFrame format
+df = pd.read_csv('DataSet.csv')
 df = shuffle(df, random_state=random_state)
 
 all_categories = df['categories'].unique()
-cat_to_idx = {}
-idx_to_cat = {}
+cat_to_idx = {} # relating category name to a number
+idx_to_cat = {}  # relating number to category name
 
 for i, cat in enumerate(all_categories):
     cat_to_idx[cat] = i
@@ -91,7 +97,7 @@ vectorizer = TfidfVectorizer(max_features = 400,
                              stop_words = 'english'
                              )
 
-X = vectorizer.fit_transform(df['preprocessed_texts']) # .astype(str) and maybe .apply(rebuild_sentence)
+X = vectorizer.fit_transform(df['preprocessed_texts'])
 print(X)
 
 # separate into train and test set
@@ -105,7 +111,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X,
 perceptron = Perceptron()
 perceptron.fit(X_train, Y_train) # train by fitting the data into the model
 Y_pred = perceptron.predict(X_test)
-print('kkkk')
+
 
 print('Predictions:') # predicted values 
 for pred in Y_pred:
