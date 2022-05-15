@@ -3,7 +3,6 @@
 
 #################### Libraries ####################
 
-# import extraction  # import the module extraction.py
 import nltk
 import spacy
 import string
@@ -53,7 +52,7 @@ def punct_lower(input_tokens):
     # making a table of translation using str.maketrans(before:string, after:string, remove:string)
     table = str.maketrans(string.ascii_uppercase, string.ascii_lowercase, string.punctuation)
     
-    for token in input_tokens:              # parsing all token
+    for token in input_tokens:              # parsing all tokens
         new_token = token.translate(table)  # apply the replacement to one token
         output_tokens.append(new_token)     # adding the new token in the list
     return output_tokens
@@ -153,47 +152,46 @@ def create_database(extracted_data):
     return df    
     
 
-#################### Test ####################
+########################################
 nlp = spacy.load("en_core_web_sm")
-cats = os.listdir(('./data'))
-print(cats)
-try: os.mkdir('./data_preprocessed')
-except Exception as e: print(e)
+categories = os.listdir(('./data'))
+
+# making the output folder
+try: 
+    os.mkdir('./data_preprocessed')
+except Exception as e: 
+    print(e)
+# list of the raw data and preprocessed data, including text and description.
 longtext = []
 longdesc = []
 longpretext = []
 longpredesc = []
 longcats = []
-for cat in cats:
 
+for cat in categories:
     path1 = './data/' + cat
     filenames =os.listdir(path1)
-    # print(filenames)
     path2 =  './data_preprocessed/' + cat
 
-    # if len(filenames) > 0 :
     try:
         os.mkdir(path2)
     except Exception as e:
         print(e)
+
     for fn in filenames :
-        if  fn[-4:] == '.txt' :  # fn[-9:] == '_desc.txt' or
+        if  fn[-4:] == '.txt' :   
             with open(path1+'/'+fn , 'r') as f :
-                # print(f.read())
                 text = f.read()
             text_sp = nlp(text)
-            tokens = text_to_token(text_sp)
-
-            tokens_pnc = punct_lower(tokens)
-            tokens_stp = remove_stopwords(tokens_pnc)
-            # tokens_peo = extract_people(tokens_stp)
-            # print(tokens_peo)
-
+            tokens = text_to_token(text_sp) # tokenising the text 
+            tokens_pnc = punct_lower(tokens) # removing punctuations and lowerCasing
+            tokens_stp = remove_stopwords(tokens_pnc) # removing stopwords
+            
+            # saving the preprocessed text into the file
             with open(path2 + '/' + fn , 'w' ) as f2 :
                 print(*tokens_stp, file = f2)
             pre_text = ' '.join(tokens_stp)
-            # print('\n \n \n startssss')
-            # print(pre_text)
+            
             if  fn[-9:] == '_desc.txt' :
                 longdesc.append(text)
                 longpredesc.append(pre_text)
