@@ -159,7 +159,10 @@ cats = os.listdir(('./data'))
 print(cats)
 try: os.mkdir('./data_preprocessed')
 except Exception as e: print(e)
-
+longtext = []
+longdesc = []
+longpretext = []
+longpredesc = []
 for cat in cats[:1]:
 
     path1 = './data/' + cat
@@ -173,7 +176,7 @@ for cat in cats[:1]:
     except Exception as e:
         print(e)
     for fn in filenames [:3]:
-        if fn[-9:] == '_desc.txt' or fn[-4:] == '.txt' :
+        if  fn[-4:] == '.txt' :  # fn[-9:] == '_desc.txt' or
             with open(path1+'/'+fn , 'r') as f :
                 # print(f.read())
                 text = f.read()
@@ -187,6 +190,18 @@ for cat in cats[:1]:
 
             with open(path2 + '/' + fn , 'w' ) as f2 :
                 print(*tokens_stp, file = f2)
+            pre_text = ' '.join(tokens_stp)
+            # print('\n \n \n startssss')
+            # print(pre_text)
+            longtext.append(text)
+            longpretext.append(pre_text)
+data = {'texts' : longtext , 'preprocessed_texts' : longpretext}
+df = pd.DataFrame(data, columns = ['texts', 'preprocessed_texts'] )
+df.to_csv("DataSet.csv")
+
+
+
+
 
 
 
